@@ -64,13 +64,12 @@ async fn handle_socket(socket: WebSocket, user_id: String, state: UserSockets) {
     // Task to receive messages from the WebSocket
     tokio::spawn(async move {
         while let Some(Ok(msg)) = receiver.next().await {
-            println!("step: 4");
             match msg {
                 Message::Text(t) => {
-                    println!("Received from {}: {}", user_id_task, t);
+                    println!("Received text from {}: {}", user_id_task, t);
                 }
                 Message::Binary(d) => {
-                    println!("Received from {}: {:?}", user_id_task, d);
+                    println!("Received binary from {}: {:?}", user_id_task, d);
                 }
                 Message::Ping(v) => {
                     println!("Ping from {}: {:?}", user_id_task, v);
@@ -87,10 +86,7 @@ async fn handle_socket(socket: WebSocket, user_id: String, state: UserSockets) {
         // Cleanup when user disconnects
         let mut user_sockets = state.lock().unwrap();
         if let Some(sockets) = user_sockets.get_mut(&user_id_task) {
-            for socket in &mut *sockets {
-                println!("socket: {}", socket.is_closed());
-            }
-            sockets.retain(|s| !s.is_closed() && s.clone().send(Message::Ping(vec![])).is_ok());
+            sockets.retain(|s| !s.is_closed() && s.send(Message::Ping(vec![])).is_ok());
             if sockets.is_empty() {
                 user_sockets.remove(&user_id_task);
             }
