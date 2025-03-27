@@ -15,7 +15,8 @@ use axum::{
 use futures_util::{SinkExt, StreamExt};
 use tokio::sync::mpsc;
 
-type UserSockets = Arc<Mutex<HashMap<String, Vec<mpsc::UnboundedSender<Message>>>>>;
+type Sender = mpsc::UnboundedSender<Message>;
+type UserSockets = Arc<Mutex<HashMap<String, Vec<Sender>>>>;
 
 #[tokio::main]
 async fn main() {

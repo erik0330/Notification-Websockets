@@ -1,4 +1,4 @@
-const socket = new WebSocket('ws://localhost:8000/ws?user_id=19970330');
+const socket = new WebSocket('ws://localhost:8000/ws?user_id=96b70d7c-ab1a-4ae6-a83e-ccc583ca2bed');
 
 socket.addEventListener('open', function (event) {
     socket.send('Hello Server!');
